@@ -30,14 +30,18 @@ main:
 		syscall
 		move $t1, $v0
 		move $s1, $t1
+		
+		slti $t7,$s0, 3		# disks have to be greater than 3
+		slti $t7, $s1, 3	# poles have to be greater than 3
+		beq $t7, 1, exit	# if disks or poles are less than 3, exit
 # input received:
 # $s0: # disks
 # $s1: # poles
-
+		add $a1, $sp, $zero
 		addi $t2, $zero, 4 	# size of each word
 		mult $t2, $s0 		
 		mflo $t2 			# size of each stack ( 1 word * number of disks )
-		add $a2, $t2, $sp		# spare stack @ $sp + (4)(disks)
+		add $a2, $t2, $a1		# spare stack @ $sp + (4)(disks)
 		# final stack start address @ $sp + 2* (4)(disks) 
 		add $a3, $a2, $t2	 
 		move $s2, $t2
@@ -45,7 +49,7 @@ main:
 		la $t3, ($s0)
 		jal load
 		lw $ra, 0($sp)
-		la $a1, ($sp)
+# a1: first stack
 # a2: spare stack
 # a3: final stack
 load:
@@ -54,16 +58,24 @@ load:
 		sw  $t3, ($sp)
 		addi $t3, $t3, -1	# n = n - 1
 		bne $t3, $zero, load	# if n =/= 0, loop back to 'load'
+		add $t4, $zero, $a1	#t4 is the temporary source
+		add $t5, $zero, $a2	#t5 is the temporary spare
+		add $t6, $zero, $a3	#t6 is temporary destination
 		j moveTower		#go to movetower
+	
 moveTower:				#move tower from source peg to destination peg
-		beq $t0,$zero,moveDisk 	#if disks are zero, go to decrease
+		slti $t3, $t0, 2	#test if disks == 0
+		beq $t3,$zero,L1 	#if disks are not zero, go to L1
+		#I am still working onthe part below
+					#if 
 		
+L1:		
+		add $t7, $zero, $t5	#save t7 into t5
+		add $t5, $zero, $t6	#set temporary spare as temporary destination
+		add $t6, $zero, $t7	#set temporary destination as temporary spare
+		addi $t0, $t0, -1	#decrease t0
+		jal moveTower		#recursion call
 		
-moveDisk:	lw $t1, 0($sp)		#load word from where sp points to in t1
-		addi $ra, $sp, 4	#save the next sp address (where the next disk is) to ra
-		add $sp, $sp, $s2	#move stack pointer up by 4N bytes
-		sw $t1, 0($sp)		#save the value in t1 to next peg
-		jr $ra			#return address of first peg
 				
 		
 		j exit
