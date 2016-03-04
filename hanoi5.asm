@@ -36,7 +36,7 @@ main:
 
 		addi $t2, $zero, 4 	# size of each word
 		mult $t2, $s0 		
-		mflo $s2 			# size of each stack ( 1 word * number of disks )
+		mflo $t2 			# size of each stack ( 1 word * number of disks )
 		add $a2, $t2, $sp		# spare stack @ $sp + (4)(disks)
 		# final stack start address @ $sp + 2* (4)(disks) 
 		add $a3, $a2, $t2	 
@@ -56,7 +56,6 @@ load:
 		addi $t3, $t3, -1	# n = n - 1
 		bne $t3, $zero, load	# if n =/= 0, loop back to 'load'
 		j move1
-
 move1:
 		lw $t4, ($sp)
 		addu $sp, $sp, 4
@@ -66,7 +65,6 @@ exit:
 		# terminate
 		li $v0, 10
 		syscall
-
 		# testing for the data output
 		# addi $sp, $sp,4	
 		# li $v0, 4 
