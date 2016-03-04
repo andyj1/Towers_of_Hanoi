@@ -8,43 +8,42 @@ errinput:	.asciiz "Invalid inputs"
 .text
 	.globl main
 main:
-		# title
+		# title print out
 		la $v0, 4
 		la $a0, title
 		syscall
-		# disk
+		# disk input prompt
 		la $v0, 4
 		la $a0, disk
 		syscall	
-		# input: disks
+		# takes in input: disks
 		li $v0, 5
 		syscall
 		move $t0, $v0
 		move $s0, $t0
-		# pole
+		# pole input prompt
 		la $v0, 4
 		la $a0, pole
 		syscall
-		# input: pole
+		# takes in input: pole 
 		li $v0, 5
 		syscall
 		move $t1, $v0
 		move $s1, $t1
-		
+		# conditions for disks and poles inputs
 		slti $t7,$s0, 3		# disks have to be greater than 3
 		slti $t7, $s1, 3	# poles have to be greater than 3
 		beq $t7, 1, exit	# if disks or poles are less than 3, exit
-# input received:
-# $s0: # disks
-# $s1: # poles
-		add $a1, $sp, $zero
+#########################################
+# input received:   $s0:  # of disks  $s1: # of poles
+#########################################
+		add $a1, $sp, $zero # $a1 = $sp
 		addi $t2, $zero, 4 	# size of each word
 		mult $t2, $s0 		
-		mflo $t2 			# size of each stack ( 1 word * number of disks )
+		mflo $t2 			# size of each stack ( = 1 word * number of disks )
 		add $a2, $t2, $a1		# spare stack @ $sp + (4)(disks)
-		# final stack start address @ $sp + 2* (4)(disks) 
-		add $a3, $a2, $t2	 
-		move $s2, $t2
+		add $a3, $a2, $t2	 	# final stack start address @ $sp + 2* (4)(disks) 
+		move $s2, $t2  # size of each stack stored in $s2
 		# assign n to a temp register t3
 		la $t3, ($s0)
 		jal load
