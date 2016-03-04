@@ -33,11 +33,11 @@ main:
 # input received:
 # $s0: # disks
 # $s1: # poles
-
+		add $a1, $sp, $zero
 		addi $t2, $zero, 4 	# size of each word
 		mult $t2, $s0 		
 		mflo $t2 			# size of each stack ( 1 word * number of disks )
-		add $a2, $t2, $sp		# spare stack @ $sp + (4)(disks)
+		add $a2, $t2, $a1		# spare stack @ $sp + (4)(disks)
 		# final stack start address @ $sp + 2* (4)(disks) 
 		add $a3, $a2, $t2	 
 		move $s2, $t2
@@ -45,7 +45,7 @@ main:
 		la $t3, ($s0)
 		jal load
 		lw $ra, 0($sp)
-		la $a1, ($sp)
+# a1: first stack
 # a2: spare stack
 # a3: final stack
 load:
@@ -65,7 +65,6 @@ moveDisk:	lw $t1, 0($sp)		#load word from where sp points to in t1
 		sw $t1, 0($sp)		#save the value in t1 to next peg
 		jr $ra			#return address of first peg
 				
-		
 		j exit
 exit:
 		# terminate
