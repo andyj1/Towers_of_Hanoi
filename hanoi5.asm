@@ -33,7 +33,6 @@ main:
 # input received:
 # $s0: # disks
 # $s1: # poles
-
 		addi $t2, $zero, 4 	# size of each word
 		mult $t2, $s0 		
 		mflo $t2 			# size of each stack ( 1 word * number of disks )
@@ -45,8 +44,7 @@ main:
 		la $t3, ($s0)
 		jal load
 		lw $ra, 0($sp)
-		la $a1, ($sp)
-# a1: first stack
+# sp: first stack
 # a2: spare stack
 # a3: final stack
 load:
@@ -57,9 +55,8 @@ load:
 		bne $t3, $zero, load	# if n =/= 0, loop back to 'load'
 		j move1
 move1:
-		lw $t4, ($sp)
+		lw $t4, ($sp) # t4 contains value 1 (to be moved)
 		addu $sp, $sp, 4
-		
 		j exit
 exit:
 		# terminate
