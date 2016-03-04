@@ -86,14 +86,6 @@ exit:
 		la $a0, finish
 		syscall		
 
-		
-		
-	
-	
-	
-	
-		
-		
 #######################################
 # allocation, assignment of addresses finished
 #######################################
