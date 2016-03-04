@@ -33,33 +33,48 @@ main:
 # input received:
 # $s0: # disks
 # $s1: # poles
+
+		addi $t2, $zero, 4 	# size of each word
+		mult $t2, $s0 		
+		mflo $t2 			# size of each stack ( 1 word * number of disks )
+		add $a2, $t2, $sp		# spare stack @ $sp + (4)(disks)
+		# final stack start address @ $sp + 2* (4)(disks) 
+		add $a3, $a2, $t2	 
+		move $s2, $t2
 		# assign n to a temp register t3
 		la $t3, ($s0)
 		jal load
 		lw $ra, 0($sp)
-		
+		la $a1, ($sp)
+# a2: spare stack
+# a3: final stack
 load:
-		la $ra, 0($sp)
+		la $ra, 0($sp) # $sp : start of the first stack
 		subi $sp,$sp,4 	# sp = sp - (1 word)
 		sw  $t3, ($sp)
 		addi $t3, $t3, -1	# n = n - 1
 		bne $t3, $zero, load	# if n =/= 0, loop back to 'load'
-		j moveTower
+		j moveTower		#go to movetower
 moveTower:				#move tower from source peg to destination peg
-		lw $t4, ($sp)		#load memory in sp into t4
-		addu $sp, $sp, 4	#move sp up by 4 
-	
+		beq $t0,$zero,moveDisk 	#if disks are zero, go to decrease
+		
+		
+moveDisk:	lw $t1, 0($sp)		#load word from where sp points to in t1
+		addi $ra, $sp, 4	#save the next sp address (where the next disk is) to ra
+		add $sp, $sp, $s2	#move stack pointer up by 4N bytes
+		sw $t1, 0($sp)		#save the value in t1 to next peg
+		jr $ra			#return address of first peg
+				
+		
+		j exit
 exit:
 		# terminate
-		#li $v0, 10
-		#syscall
-
-		# testing for the data output
-		addi $sp, $sp,4	
-		li $v0, 4 
-		sw $a0, ($sp)
+		li $v0, 10
 		syscall
 
-		bne $t3, $zero, load	# if n =/= 0, loop back to 'load'
-		
+		# testing for the data output
+		# addi $sp, $sp,4	
+		# li $v0, 4 
+		# sw $a0, ($sp)
+		# syscall
 		
