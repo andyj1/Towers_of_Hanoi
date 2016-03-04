@@ -30,6 +30,10 @@ main:
 		syscall
 		move $t1, $v0
 		move $s1, $t1
+		
+		slti $t7,$s0, 3		# disks have to be greater than 3
+		slti $t7, $s1, 3	# poles have to be greater than 3
+		beq $t7, 1, exit	# if disks or poles are less than 3, exit
 # input received:
 # $s0: # disks
 # $s1: # poles
@@ -66,10 +70,14 @@ moveDisk:	lw $t1, 0($sp)		#load word from where sp points to in t1
 		jr $ra			#return address of first peg
 				
 		j exit
-exit:
-		# terminate
-		li $v0, 10
+exit:	
+		# return 1
+		li $v0, 1
+		la $a0, ($v0)
 		syscall
+		# terminate
+		# li $v0, 10
+		# syscall
 
 		# testing for the data output
 		# addi $sp, $sp,4	
