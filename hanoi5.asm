@@ -5,7 +5,6 @@ pole:	.asciiz "Pegs: \n"
 finish:	.asciiz "Finished. It took "
 times:	.asciiz "times."
 errinput:	.asciiz "Invalid inputs"
-
 .text
 	.globl main
 main:
@@ -34,15 +33,26 @@ main:
 # input received:
 # $s0: # disks
 # $s1: # poles
-		bne $s0, $zero, load
-load:
-		addi $ra, $sp, 4
-		la $t3,($s0)
-		la  $sp, ($t3)
-		addi $t3, $t3, -1
-		bne $t3, $zero, load
+		# assign n to a temp register t3
+		la $t3, ($s0)
+		jal load
+		lw $ra, 0($sp)
 		
+load:
+		la $ra, 0($sp)
+		subi $sp,$sp,4 	# sp = sp - (1 word)
+		sw  $t3, ($sp)
+		addi $t3, $t3, -1	# n = n - 1
+		bne $t3, $zero, load	# if n =/= 0, loop back to 'load'
 		j exit
 exit:
+		# terminate
 		li $v0, 10
+		syscall
+
+		# testing for the data output
+		# addi $sp, $sp,4	
+		# li $v0, 4 
+		# sw $a0, ($sp)
+		# syscall
 		
