@@ -31,9 +31,9 @@ main:
 		move $t1, $v0
 		move $s1, $t1
 		# conditions for disks and poles inputs
-		slti $t7,$s0, 3		# disks have to be greater than 3
-		slti $t7, $s1, 3	# poles have to be greater than 3
-		beq $t7, 1, exit	# if disks or poles are less than 3, exit
+		slti $s7,$s0, 3		# disks have to be greater than 3
+		slti $s7, $s1, 3	# poles have to be greater than 3
+		beq $s7, 1, error	# if disks or poles are less than 3, exit
 #########################################
 # input received:   $s0:  # of disks  $s1: # of poles
 #########################################
@@ -69,6 +69,14 @@ moveDisk:	lw $t1, 0($sp)		#load word from where sp points to in t1
 		jr $ra			#return address of first peg
 				
 		j exit
+		
+error:
+		li $v0, 4
+		la $a0, errinput
+		syscall
+		
+		li $v0, 10
+		syscall
 exit:	
 		# return 1
 		li $v0, 1
