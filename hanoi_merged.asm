@@ -63,6 +63,7 @@ load:
 		add $s5, $zero, $a2	#t5 is the temporary spare
 		add $s6, $zero, $a3	#t6 is temporary destination
 		add $s3, $zero, $a3
+		sw $a1, 0($s3)
 		j moveTower		#go to movetower
 	
 moveTower:				#move tower from source peg to destination peg
@@ -77,6 +78,7 @@ moveTower:				#move tower from source peg to destination peg
 		add $sp, $zero, $s6	#go to temporary final destination
 		subi $sp, $sp, 4
 		sw $t7, 0($sp)		#save number into temporary final destination
+		subi $s6, $s6, 4	#move pointer up
 		jr $ra			#go back to L1
 		
 L1:		
@@ -89,14 +91,17 @@ L1:
 		addi $t0, $t0, -1	#decrease t0
 		jal moveTower		#recursion call
 		#the following code move disks
-		addi $t0, $t0, 1	#move t0 back up
-		subi $s3, $s3, 8	#pop 2 items up
-		lw $s5, 0($s3)		#load destination back
-		lw $s6, 4($s3)		#load spare back
-		addi $s3, $s3, 8
-		sw $s4, 0($s3)		#save temp source to memory
-		sw $s6, 4($s3)		#save temp spare to memory
-		addi $s3, $s3, 8	#move s3 down by 2 items
+		#addi $t0, $t0, 1	#move t0 back up
+		#subi $s3, $s3, 8	#pop 2 items up
+		#lw $s5, 0($s3)		#load destination back
+		#lw $s6, 4($s3)		#load spare back
+		#addi $s3, $s3, 8
+		#lw $t7, 0($s4)		#move disk agaain
+		#sw $zero, 0($s4)	
+		#sw $t7, 0($s5)
+		#sw $s4, 0($s3)		#save temp source to memory
+		#sw $s6, 4($s3)		#save temp spare to memory
+		#addi $s3, $s3, 8	#move s3 down by 2 items
 		#end of following code
 		add $t7, $zero, $s4
 		add $s4, $zero, $s6	#set temporary source as temporary spare
