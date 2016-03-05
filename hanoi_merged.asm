@@ -4,7 +4,7 @@ disk:	.asciiz "Disks: \n"
 pole:	.asciiz "Pegs: \n"
 finish:	.asciiz "Finished. It took "
 times:	.asciiz "times."
-errinput:	.asciiz "Invalid inputs"
+# errinput:	.asciiz "Invalid inputs"
 .text
 	.globl main
 main:
@@ -113,13 +113,12 @@ L1:
 		j exit
 				
 		
-error:
-		li $v0, 4
-		la $a0, errinput
-		syscall
-		
-		li $v0, 10
-		syscall
+# error:
+# 		li $v0, 4
+#		la $a0, errinput
+#		syscall
+#		li $v0, 10
+#		syscall
 exit:	
 		# return 1
 		li $v0, 1
