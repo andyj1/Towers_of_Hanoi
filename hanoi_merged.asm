@@ -67,9 +67,44 @@ load:
 		j moveTower		#go to movetower
 	
 moveTower:				#move tower from source peg to destination peg
+		sw $s4, 0($s3)
+		sw $s5, 4($s3)
+		sw $s6, 8($s3)
+		addi $s3, $s3, 12	#move s3 down by 2 items
 		slti $t3, $t0, 2	#test if disks == 0
 		beq $t3,$zero,L1 	#if disks are not zero, go to L1
 		#I am still working onthe part below
+		add $sp, $zero, $s4	#where disk moving is supposed to happen
+		
+		lw $t7, 0($sp)		#pop first disk from current location
+		sw $zero, 0($sp)	#after popping, set popped value to zero
+		addi $sp, $sp, 4	#pop 1 item from stack
+		add $s4, $zero, $sp	#reset temporary 
+		add $sp, $zero, $s6	#go to temporary final destination
+		subi $sp, $sp, 4
+		sw $s4, -12($s3)	#save newest value of s4
+		
+		sw $t7, 0($sp)		#save number into temporary final destination
+		subi $s6, $s6, 4	#move pointer up
+		sw $s6, -4($s3)		#save the newest value of s6
+		jr $ra			#go back to L1
+		
+L1:		
+				
+		add $t7, $zero, $s5	#save t7 into t5
+		add $s5, $zero, $s6	#set temporary spare as temporary destination
+		add $s6, $zero, $t7	#set temporary destination as temporary spare
+		addi $t0, $t0, -1	#decrease t0
+		jal moveTower		#recursion call
+		#the following code move disks
+		addi $t0, $t0, 1	#move t0 back up
+		
+		subi $s3, $s3, 12	#pop 3 items up
+		lw $s4, 0($s3)
+		lw $s5, 8($s3)		#load destination back
+		lw $s6, 4($s3)		#load spare back
+		subi $s3, $s3, 12
+		
 		add $sp, $zero, $s4	#where disk moving is supposed to happen
 		lw $t7, 0($sp)		#pop first disk from current location
 		sw $zero, 0($sp)	#after popping, set popped value to zero
@@ -77,40 +112,29 @@ moveTower:				#move tower from source peg to destination peg
 		add $s4, $zero, $sp	#reset temporary 
 		add $sp, $zero, $s6	#go to temporary final destination
 		subi $sp, $sp, 4
+		sw $s4, -12($s3)
 		sw $t7, 0($sp)		#save number into temporary final destination
 		subi $s6, $s6, 4	#move pointer up
-		jr $ra			#go back to L1
 		
-L1:		
-		sw $s5, 0($s3)
-		sw $s6, 4($s3)
-		addi $s3, $s3, 8	#move s3 down by 2 items		
-		add $t7, $zero, $s5	#save t7 into t5
-		add $s5, $zero, $s6	#set temporary spare as temporary destination
-		add $s6, $zero, $t7	#set temporary destination as temporary spare
-		addi $t0, $t0, -1	#decrease t0
-		jal moveTower		#recursion call
-		#the following code move disks
-		#addi $t0, $t0, 1	#move t0 back up
-		#subi $s3, $s3, 8	#pop 2 items up
-		#lw $s5, 0($s3)		#load destination back
-		#lw $s6, 4($s3)		#load spare back
-		#addi $s3, $s3, 8
-		#lw $t7, 0($s4)		#move disk agaain
-		#sw $zero, 0($s4)	
-		#sw $t7, 0($s5)
-		#sw $s4, 0($s3)		#save temp source to memory
-		#sw $s6, 4($s3)		#save temp spare to memory
-		#addi $s3, $s3, 8	#move s3 down by 2 items
+		sw $s4, 0($s3)		#save temp source to memory
+		sw $s5, 4($s3)		#save temp spare to memory
+		sw $s6, 8($s3)
+		addi $s3, $s3, 12	#move s3 down by 2 items
 		#end of following code
+		
 		add $t7, $zero, $s4
-		add $s4, $zero, $s6	#set temporary source as temporary spare
-		add $s6, $zero, $t7	#set temporary spare as temporary source
+		add $s4, $zero, $s5	#set temporary source as temporary spare
+		add $s5, $zero, $t7	#set temporary spare as temporary source
+		subi $t0, $t0, 1
 		jal moveTower		#go into moveTower again
-		subi $s3, $s3, 8	#pop 2 items up
-		lw $s4, 0($s3)		#load destination back
-		lw $s6, 4($s3)		#load spare back
-		j exit
+		
+		subi $s3, $s3, 12	#pop 2 items up
+		#lw $s4, 0($s3)		#load destination back
+		#lw $s5, 4($s3)
+		#lw $s6, 8($s3)		#load spare back
+		
+		beq $t0, $s1, exit
+		jr $ra
 				
 		
 error:
