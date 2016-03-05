@@ -58,9 +58,9 @@ load:
 		sw  $t3, ($sp)
 		addi $t3, $t3, -1	# n = n - 1
 		bne $t3, $zero, load	# if n =/= 0, loop back to 'load'
-		add $t4, $zero, $a1	#t4 is the temporary source
-		add $t5, $zero, $a2	#t5 is the temporary spare
-		add $t6, $zero, $a3	#t6 is temporary destination
+		add $s4, $zero, $a1	#t4 is the temporary source
+		add $s5, $zero, $a2	#t5 is the temporary spare
+		add $s6, $zero, $a3	#t6 is temporary destination
 		j moveTower		#go to movetower
 	
 moveTower:				#move tower from source peg to destination peg
@@ -69,14 +69,14 @@ moveTower:				#move tower from source peg to destination peg
 		#I am still working onthe part below
 		add $sp, $zero, $t4	
 		lw $t7, 0($sp)		#pop first disk from current location
-		add $sp, $zero, $t6	#go to temporary final destination
+		add $sp, $zero, $s6	#go to temporary final destination
 		sw $t7, 0($sp)		#save number into temporary final destination
 		jr $ra			#go back to L1
 		
 L1:		
-		add $t7, $zero, $t5	#save t7 into t5
-		add $t5, $zero, $t6	#set temporary spare as temporary destination
-		add $t6, $zero, $t7	#set temporary destination as temporary spare
+		add $t7, $zero, $s5	#save t7 into t5
+		add $s5, $zero, $s6	#set temporary spare as temporary destination
+		add $s6, $zero, $t7	#set temporary destination as temporary spare
 		addi $t0, $t0, -1	#decrease t0
 		jal moveTower		#recursion call
 		
