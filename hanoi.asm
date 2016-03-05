@@ -67,8 +67,11 @@ moveTower:				#move tower from source peg to destination peg
 		slti $t3, $t0, 2	#test if disks == 0
 		beq $t3,$zero,L1 	#if disks are not zero, go to L1
 		#I am still working onthe part below
-		add $sp, $zero, $t4	#if so, go back to source	
-		lw $t6, 0($sp)		#pop first disk from current location
+		add $sp, $zero, $t4	
+		lw $t7, 0($sp)		#pop first disk from current location
+		add $sp, $zero, $t6	#go to temporary final destination
+		sw $t7, 0($sp)		#save number into temporary final destination
+		jr $ra			#go back to L1
 		
 L1:		
 		add $t7, $zero, $t5	#save t7 into t5
