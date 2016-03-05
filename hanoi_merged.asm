@@ -31,10 +31,10 @@ main:
 		move $t1, $v0
 		move $s1, $t1
 		# conditions for disks and poles inputs
-		slti $s7, $s0, 3	# disks have to be greater than 3
-		slti $s7, $s0, 3	# poles have to be greater than 3
-		addi $t7, $zero, 1
-		beq $s7, $t7, error	# if disks or poles are less than 3, exit
+		#slti $s7, $s0, 3	# disks have to be greater than 3
+		#slti $s7, $s0, 3	# poles have to be greater than 3
+		#addi $t7, $zero, 1
+		#beq $s7, $t7, error	# if disks or poles are less than 3, exit
 #########################################
 # input received:   $s0:  # of disks  $s1: # of poles
 #########################################
