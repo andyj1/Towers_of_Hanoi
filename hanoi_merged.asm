@@ -47,7 +47,7 @@ main:
 		move $s2, $t2  # size of each stack stored in $s2
 		# assign n to a temp register t3
 		la $t3, ($s0)
-		jal load
+		j load
 		lw $ra, 0($sp)
 # a1: first stack
 # a2: spare stack
@@ -58,6 +58,7 @@ load:
 		sw  $t3, ($sp)
 		addi $t3, $t3, -1	# n = n - 1
 		bne $t3, $zero, load	# if n =/= 0, loop back to 'load'
+		sub $a1, $a1, $s2
 		add $s4, $zero, $a1	#t4 is the temporary source
 		add $s5, $zero, $a2	#t5 is the temporary spare
 		add $s6, $zero, $a3	#t6 is temporary destination
@@ -67,9 +68,10 @@ moveTower:				#move tower from source peg to destination peg
 		slti $t3, $t0, 2	#test if disks == 0
 		beq $t3,$zero,L1 	#if disks are not zero, go to L1
 		#I am still working onthe part below
-		add $sp, $zero, $t4	
+		add $sp, $zero, $s4	#where disk moving is supposed to happen
 		lw $t7, 0($sp)		#pop first disk from current location
 		add $sp, $zero, $s6	#go to temporary final destination
+		addi $sp, $sp, 4
 		sw $t7, 0($sp)		#save number into temporary final destination
 		jr $ra			#go back to L1
 		
@@ -79,7 +81,11 @@ L1:
 		add $s6, $zero, $t7	#set temporary destination as temporary spare
 		addi $t0, $t0, -1	#decrease t0
 		jal moveTower		#recursion call
-		
+		#move disk
+		add $t7, $zero, $s4
+		add $s4, $zero, $s5	#set temporary source as temporary spare
+		add $s5, $zero, $t7	#set temporary spare as temporary source
+		jal moveTower		#go into moveTower again
 				
 		
 error:
