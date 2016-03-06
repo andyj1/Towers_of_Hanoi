@@ -1,10 +1,22 @@
+#
+# School: The Cooper Union
+# Course: ECE151A Spring 2016
+# Assignment: Towers of Hanoi in MIPS 
+# Group members: Andy Jeong, Brenda So, Gordon Macshane
+# Date: 3/7/2016
+#
+# Note:
+# 	The number of disks should be >= 3 (integer)
+# 	The number of pegs should be >= 3 (integer)
+#
+
 .data
 title: 	.asciiz "Tower of Hanoi\n"
 disk:	.asciiz "Disks: \n"
 pole:	.asciiz "Pegs: \n"
-finish:	.asciiz "Finished. It took "
-times:	.asciiz "times."
-errinput:	.asciiz "Invalid inputs"
+finish:	.asciiz "Finished. "
+# times:	.asciiz "times."
+#errinput:	.asciiz "Invalid inputs"
 .text
 	.globl main
 main:
@@ -31,10 +43,9 @@ main:
 		move $t1, $v0
 		move $s1, $t1
 		# conditions for disks and poles inputs
-		slti $s7, $s0, 3	# disks have to be greater than 3
-		slti $s7, $s0, 3	# poles have to be greater than 3
-		addi $t7, $zero, 1
-		beq $s7, $t7, error	# if disks or poles are less than 3, exit
+		#sgt $s4, $s0, 3	# disks have to be greater than 3
+		#sgt $s4, $s1, 3	# poles have to be greater than 3
+		#bne $s5, $zero, error	# if disks or poles are less than 3, exit
 #########################################
 # input received:   $s0:  # of disks  $s1: # of poles
 #########################################
@@ -65,7 +76,10 @@ load:
 		add $s3, $zero, $a3
 		sw $a1, 0($s3)
 		j moveTower		#go to movetower
-	
+#s4: source
+# s5: destination
+# s6: spare
+
 moveTower:				#move tower from source peg to destination peg
 		sw $ra, 0($s3)
 		sw $s4, 4($s3)
@@ -89,6 +103,7 @@ moveTower:				#move tower from source peg to destination peg
 		subi $s6, $s6, 4	#move pointer up
 		sw $s6, -4($s3)		#save the newest value of s6
 		jr $ra			#go back to L1
+
 		
 L1:		
 				
@@ -127,7 +142,7 @@ L1:
 		add $s4, $zero, $s5	#set temporary source as temporary spare
 		add $s5, $zero, $t7	#set temporary spare as temporary source
 		subi $t0, $t0, 1
-		jal moveTower		#go into moveTower again
+		jal moveTower		#go to moveTower2
 		addi $t0, $t0, 1	
 		#subi $s3, $s3, 8	#pop 2 items up
 		#lw $s4, 0($s3)		#load destination back
@@ -136,7 +151,27 @@ L1:
 		add $ra, $zero, $sp 
 		la $s7, ($s5)		# address of 3 retrieved from $s5
 		lw $t7, 0($s7)  	# t7 =  3
-		sw $zero, 0($s7)
+		add $t8, $zero, $s0
+		beq $t8, $t7, setZero
+			
+		#la $t5, ($s5)
+		#la $t5, 0($s5)
+		#sw $zero, 0($t5)
+		#add $t4, $zero,  $t4	
+		beq $t0, $s1, exit
+		lw $ra, -16($s3)
+		
+		jr $ra
+		
+#error:
+#		li $v0, 4
+#		la $a0, errinput
+#		syscall
+
+#		li $v0, 10
+#		syscall
+setZero:
+		
 		add $t0, $s1, -1
 		mult $t0, $s1
 		mflo $t6			
@@ -145,30 +180,19 @@ L1:
 		mflo $t6
 		add $s7, $s7, $t6
 		sw $t7, 0($s7)
+		sw $zero, 0($s5)	
 		
-		#la $t5, ($s5)
-		#la $t5, 0($s5)
-		#sw $zero, 0($t5)
-		
-		#add $t4, $zero,  $t4	
-		
-		beq $t0, $s1, exit
-		lw $ra, -16($s3)
-		jr $ra
-				
-		
-error:
-		li $v0, 4
-		la $a0, errinput
-		syscall
-		
-		li $v0, 10
-		syscall
 exit:	
-		# return 1
-		li $v0, 1
-		la $a0, ($v0)
+		#output finish call
+		li $v0, 4
+		la $a0, finish
 		syscall
+	
+		# return 1
+		#li $v0, 1
+		#la $a0, ($v0)
+		#syscall
+		
 		# terminate
 		# li $v0, 10
 		# syscall
