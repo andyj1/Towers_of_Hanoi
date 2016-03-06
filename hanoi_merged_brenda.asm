@@ -67,10 +67,11 @@ load:
 		j moveTower		#go to movetower
 	
 moveTower:				#move tower from source peg to destination peg
-		sw $s4, 0($s3)
-		sw $s5, 4($s3)
-		sw $s6, 8($s3)
-		addi $s3, $s3, 12	#move s3 down by 2 items
+		sw $ra, 0($s3)
+		sw $s4, 4($s3)
+		sw $s5, 8($s3)
+		sw $s6, 12($s3)
+		addi $s3, $s3, 16	#move s3 down by 2 items
 		slti $t3, $t0, 2	#test if disks == 0
 		beq $t3,$zero,L1 	#if disks are not zero, go to L1
 		#I am still working onthe part below
@@ -103,7 +104,7 @@ L1:
 		lw $s4, 0($s3)
 		lw $s5, 8($s3)		#load destination back
 		lw $s6, 4($s3)		#load spare back
-		subi $s3, $s3, 12
+		subi $s3, $s3, 16
 		
 		add $sp, $zero, $s4	#where disk moving is supposed to happen
 		lw $t7, 0($sp)		#pop first disk from current location
@@ -118,7 +119,7 @@ L1:
 		
 		sw $s4, 0($s3)		#save temp source to memory
 		sw $s5, 4($s3)		#save temp spare to memory
-		sw $s6, 8($s3)
+		sw $s6, 8($s3)		#save temp destination to memory
 		addi $s3, $s3, 12	#move s3 down by 2 items
 		#end of following code
 		
@@ -127,13 +128,32 @@ L1:
 		add $s5, $zero, $t7	#set temporary spare as temporary source
 		subi $t0, $t0, 1
 		jal moveTower		#go into moveTower again
-		
-		subi $s3, $s3, 12	#pop 2 items up
+		addi $t0, $t0, 1	
+		#subi $s3, $s3, 8	#pop 2 items up
 		#lw $s4, 0($s3)		#load destination back
 		#lw $s5, 4($s3)
 		#lw $s6, 8($s3)		#load spare back
+		add $ra, $zero, $sp 
+		la $s7, ($s5)		# address of 3 retrieved from $s5
+		lw $t7, 0($s7)  	# t7 =  3
+		sw $zero, 0($s7)
+		add $t0, $s1, -1
+		mult $t0, $s1
+		mflo $t6			
+		addi $t4, $zero, 4
+		mult $t6, $t4
+		mflo $t6
+		add $s7, $s7, $t6
+		sw $t7, 0($s7)
+		
+		#la $t5, ($s5)
+		#la $t5, 0($s5)
+		#sw $zero, 0($t5)
+		
+		#add $t4, $zero,  $t4	
 		
 		beq $t0, $s1, exit
+		lw $ra, -16($s3)
 		jr $ra
 				
 		
