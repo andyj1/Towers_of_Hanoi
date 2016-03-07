@@ -1,0 +1,10 @@
+Tower of Hanoi
+Disks: 
+**** user input : 3
+Poles: 
+**** user input : 3
+Finished. Final destination pole has: 
+1
+2
+3
+-- program is finished running --
