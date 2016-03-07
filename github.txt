@@ -1,2 +1,0 @@
-github repository:
-https://github.com/andyj1/towers_of_hanoi
