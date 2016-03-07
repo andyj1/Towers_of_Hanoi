@@ -13,10 +13,12 @@ This code was originally planned to be used universally, whereby inputs for the 
 ##### To run on a MIPS simulator:
 Start either MARS(R) or QtSpim(R) MIPS simulator program.
 Load and initialize the following file:
+    
     hanoi_tower.asm
 	
 ##### Algorithm
 The algorithm for a 3-disk, 3-pole Towers of Hanoi is as follows:
+   
     Let source = pole 1, spare = pole 2, destination = pole 3
     Move the topmost (smallest) disk from pole 1 to pole 3
     Move the 2nd larger disk from pole 1 to pole 3
@@ -25,6 +27,7 @@ The algorithm for a 3-disk, 3-pole Towers of Hanoi is as follows:
     Move the smallest to pole 1
     Move the 2nd larger disk to pole 3
     Move the smallest disk to pole 3
+    
 ##### General recursion algorithm
     For n > 1, 
     hanoi(n-1, source, spare, destination)
