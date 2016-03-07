@@ -1,9 +1,9 @@
-# Towers of Hanoi
-ECE151 Spring 2016 Towers of Hanoi implementation in MIPS Assembly language
+# Tower of Hanoi
+ECE151 Spring 2016 Tower of Hanoi implementation in MIPS Assembly language
 ### Team Name: Aardvark; Members: Andy Jeong, Gordon Macshane, Brenda So
 
 ####Abstract
-This project aims to present a MIPS Assembly Language implmentation of Towers of Hanoi (https://en.wikipedia.org/wiki/Tower_of_Hanoi) 
+This project aims to present a MIPS Assembly Language implmentation of Tower of Hanoi (refer to Wikepedia page: https://en.wikipedia.org/wiki/Tower_of_Hanoi) 
 This code was originally planned to be used universally, whereby inputs for the number of disks and poles are entered without any restrictions; however, due to time limitations, this only allows for N = 3 (disks) and P = 3 (poles) as input at this moment.
 
 
@@ -27,9 +27,12 @@ The algorithm for a 3-disk, 3-pole Towers of Hanoi is as follows:
     Move the smallest disk to pole 3
     
 ##### General recursion algorithm
-    For n > 1, 
-    hanoi(n-1, source, spare, destination)
-    hanoi(n-1, spare, destination, source)
+
+    For n > 1, move(number_disks, source, destination) 
+    move(n-1, source, spare)
+    move(1, source, destination)
+    move(n-1, spare, destination)
+    
 ##### In C,
     #include <stdio.h>
     void towersOfHanoi(int n, char source, char destination, char spare)
