@@ -1,7 +1,5 @@
 # Towers of Hanoi
 ECE151 Spring 2016 Towers of Hanoi implementation in MIPS Assembly language
-
-### Verilog 2-bit Paper Processor ECE151 Cooper Union
 ### Team Name: Aardvark; Members: Andy Jeong, Gordon Macshane, Brenda So
 
 ####Abstract
